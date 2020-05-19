@@ -3,11 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
 
 namespace excel2pdf
 {
     class Program
     {
+        public static void setSheet2OnePage(Application excel, Workbook book)
+        {
+            excel.PrintCommunication = false;
+            foreach (Worksheet sheet in book.Worksheets) {
+                PageSetup setup = sheet.PageSetup;
+                setup.Zoom = false;
+                setup.FitToPagesWide = 1;
+                setup.FitToPagesTall = false;
+            }
+            excel.PrintCommunication = true;
+        }
+
         public static bool ExportWorkbookToPdf(string workbookPath, string outputPath)
         {
             // If either required string is null or empty, stop and bail out
@@ -17,11 +30,11 @@ namespace excel2pdf
             }
 
             // Create COM Objects
-            Microsoft.Office.Interop.Excel.Application excelApplication;
-            Microsoft.Office.Interop.Excel.Workbook excelWorkbook;
+            Application excelApplication;
+            Workbook excelWorkbook;
 
             // Create new instance of Excel
-            excelApplication = new Microsoft.Office.Interop.Excel.Application();
+            excelApplication = new Application();
 
             // Make the process invisible to the user
             excelApplication.ScreenUpdating = false;
@@ -46,8 +59,9 @@ namespace excel2pdf
             var exportSuccessful = true;
             try
             {
+                setSheet2OnePage(excelApplication, excelWorkbook);
                 // Call Excel's native export function (valid in Office 2007 and Office 2010, AFAIK)
-                excelWorkbook.ExportAsFixedFormat(Microsoft.Office.Interop.Excel.XlFixedFormatType.xlTypePDF, outputPath);
+                excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, outputPath);
             }
             catch (System.Exception ex)
             {
@@ -81,7 +95,7 @@ namespace excel2pdf
         {
             var ap = new ArgumentParser();
             ap.Add('i', "input", OptionType.RequiredArgument, "input excel file path.");
-            ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path");
+            ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path.");
             ap.AddHelp();
             ap.Parse(args);
             String input = ap.Get("input");
