@@ -69,10 +69,10 @@ namespace excel2pdf
 
             // You can use the following method to automatically open the PDF after export if you wish
             // Make sure that the file actually exists first...
-            if (System.IO.File.Exists(outputPath))
-            {
-                System.Diagnostics.Process.Start(outputPath);
-            }
+            // if (System.IO.File.Exists(outputPath))
+            // {
+            //     System.Diagnostics.Process.Start(outputPath);
+            // }
 
             return exportSuccessful;
         }
