@@ -1,26 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
+using System.Runtime.ExceptionServices;
+using System.Security;
 
 namespace excel2pdf
 {
     class Program
     {
-        public static void setSheet2OnePage(Application excel, Workbook book)
-        {
-            excel.PrintCommunication = false;
-            foreach (Worksheet sheet in book.Worksheets) {
-                PageSetup setup = sheet.PageSetup;
-                setup.Zoom = false;
-                setup.FitToPagesWide = 1;
-                setup.FitToPagesTall = false;
-            }
-            excel.PrintCommunication = true;
-        }
-
+        [HandleProcessCorruptedStateExceptions]
+        [SecurityCritical]
         public static bool ExportWorkbookToPdf(string workbookPath, string outputPath)
         {
             // If either required string is null or empty, stop and bail out
@@ -59,7 +47,15 @@ namespace excel2pdf
             var exportSuccessful = true;
             try
             {
-                setSheet2OnePage(excelApplication, excelWorkbook);
+                //excelApplication.PrintCommunication = false;
+                foreach (Worksheet sheet in excelWorkbook.Worksheets)
+                {
+                    PageSetup setup = sheet.PageSetup;
+                    setup.Zoom = false;
+                    setup.FitToPagesWide = 1;
+                    setup.FitToPagesTall = false;
+                }
+                //excelApplication.PrintCommunication = true;
                 // Call Excel's native export function (valid in Office 2007 and Office 2010, AFAIK)
                 excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, outputPath);
             }
