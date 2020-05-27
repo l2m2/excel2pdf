@@ -24,3 +24,6 @@ excel2pdf.exe -i D:/1.xlsx -o D:/1.pdf
     HKCR\TypeLib\{00020813-0000-0000-C000-000000000046}\1.9
     ```
     https://www.inflectra.com/support/knowledgebase/kb180.aspx
+
+## References
+- https://docs.microsoft.com/en-us/office/vba/api/excel.workbook.exportasfixedformat
