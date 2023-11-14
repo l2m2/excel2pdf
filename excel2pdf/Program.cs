@@ -1,17 +1,17 @@
-﻿using System;
-using Microsoft.Office.Interop.Excel;
-using System.Runtime.ExceptionServices;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Security;
+using Application = Microsoft.Office.Interop.Excel.Application;
+
 
 namespace excel2pdf
 {
     class Program
     {
-        [HandleProcessCorruptedStateExceptions]
         [SecurityCritical]
         public static bool ExportWorkbookToPdf(string workbookPath, string outputPath)
         {
-            // If either required string is null or empty, stop and bail out
+            // 如果所需字符串为 null 或为空，则停止并退出
             if (string.IsNullOrEmpty(workbookPath) || string.IsNullOrEmpty(outputPath))
             {
                 return false;
@@ -30,10 +30,10 @@ namespace excel2pdf
             // Make the process silent
             excelApplication.DisplayAlerts = false;
 
-            // Open the workbook that you wish to export to PDF
+            // 打开您要导出为 PDF 的工作簿
             excelWorkbook = excelApplication.Workbooks.Open(workbookPath);
 
-            // If the workbook failed to open, stop, clean up, and bail out
+            // 如果工作簿无法打开、停止、清理和退出
             if (excelWorkbook == null)
             {
                 excelApplication.Quit();
@@ -55,8 +55,8 @@ namespace excel2pdf
                     setup.FitToPagesWide = 1;
                     setup.FitToPagesTall = false;
                 }
-                //excelApplication.PrintCommunication = true;
-                // Call Excel's native export function (valid in Office 2007 and Office 2010, AFAIK)
+                //excel Application.Print 通信 = true;
+                // 调用Excel原生导出函数（在Office 2007和Office 2010中有效，AFAIK）
                 excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, outputPath);
             }
             catch (System.Exception ex)
@@ -65,7 +65,7 @@ namespace excel2pdf
                 exportSuccessful = false;
 
                 // Do something with any exceptions here, if you wish...
-                // MessageBox.Show...        
+                // MessageBox.Show(ex.Message);
             }
             finally
             {
@@ -89,13 +89,19 @@ namespace excel2pdf
 
         static int Main(string[] args)
         {
+            Environment.SetEnvironmentVariable("COMPlus_legacyCorruptedStateExceptionsPolicy", "1");
             var ap = new ArgumentParser();
             ap.Add('i', "input", OptionType.RequiredArgument, "input excel file path.");
             ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path.");
             ap.AddHelp();
             ap.Parse(args);
-            String input = ap.Get("input");
-            String output = ap.Get("output");
+            var input = ap.Get("input") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
+            var output = ap.Get("output") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}test.pdf";
+            if (System.IO.File.Exists(output))
+            {
+                System.IO.File.Delete(output);
+            }
+
             bool ok = ExportWorkbookToPdf(input, output);
             return ok ? 0 : 1;
         }
