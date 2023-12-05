@@ -100,7 +100,7 @@ namespace excel2pdf
                 ap.Parse(args);
                 //System.IO.File.AppendAllText("excel2pdf_.log", args.Length.ToString ()+ "\r\n");
                 if (args.Length > 0) System.IO.File.AppendAllText("excel2pdf_.log", args[0]+ "\r\n");
-                var input = args.Length > 0 ? (ap.Get("input") ?? args[0]) : $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
+                var input = args.Length > 0 ? (ap.Get("input") ?? args[0]) : $@"{AppDomain.CurrentDomain.BaseDirectory}test.xlsx";
                 if (!System.IO.File.Exists(input))
                 {
                     Console.Write("xlsx 文件不存在或无法访问");
