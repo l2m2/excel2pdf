@@ -18,17 +18,19 @@ namespace ConsoleApp1
         public static  void runCmd(string strCMD)
         {
             Process cmd = new Process();
-            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.StartInfo.FileName = strCMD;
+            //cmd.StartInfo.Arguments = "/c " + strCMD;
             cmd.StartInfo.RedirectStandardInput = true;
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.CreateNoWindow = true;
             cmd.StartInfo.UseShellExecute = false;
             cmd.Start();
-            cmd.StandardInput.WriteLine(strCMD);
-            cmd.StandardInput.Flush();
-            cmd.StandardInput.Close();
+            //cmd.StandardInput.WriteLine(strCMD);
+            //cmd.StandardInput.Flush();
+            //cmd.StandardInput.Close();
             cmd.WaitForExit();
-            Console.WriteLine(cmd.StandardOutput.ReadToEnd());
+            var res = cmd.StandardOutput.ReadToEnd();
+            Console.WriteLine(res);
         }
     }
 }

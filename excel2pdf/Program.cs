@@ -99,7 +99,7 @@ namespace excel2pdf
             var output = ap.Get("output") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}test.pdf";
             if (!System.IO.File.Exists(input))
             {
-                Console.WriteLine("xlsx 文件不存在或无法访问");
+                Console.Write("xlsx 文件不存在或无法访问");
                 return 0;
             }
             if (System.IO.File.Exists(output))
@@ -107,7 +107,7 @@ namespace excel2pdf
                 System.IO.File.Delete(output);
             }
             var res=ExportWorkbookToPdf(input, output);
-            Console.WriteLine(res);
+            Console.Write(res);
             return res == "OK"?1:0;
         }
     }
