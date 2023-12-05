@@ -95,19 +95,19 @@ namespace excel2pdf
             ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path.");
             ap.AddHelp();
             ap.Parse(args);
-            var input = ap.Get("input") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
-            var output = ap.Get("output") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}test.pdf";
+            var input = ap.Get("input") ?? args[0] ?? $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
             if (!System.IO.File.Exists(input))
             {
                 Console.Write("xlsx 文件不存在或无法访问");
                 return 0;
             }
+            var output = ap.Get("output") ?? System.IO.Path.GetFullPath(input).Replace(".xlsx",".pdf");
             if (System.IO.File.Exists(output))
             {
                 System.IO.File.Delete(output);
             }
             var res=ExportWorkbookToPdf(input, output);
-            Console.Write(res);
+            Console.Write(res == "OK"? output:res);
             return res == "OK"?1:0;
         }
     }
