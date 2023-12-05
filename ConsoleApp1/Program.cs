@@ -11,7 +11,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            runCmd(@"""C:\测试中文文件夹\excel2pdf.exe"" -i ""C:\Users\alex\Desktop\Cliente_11_A11UR8903.xlsx"" -o ""C:\Users\alex\Desktop\Cliente_11_AUR8903.pdf""");
+            runCmd(@"excel2pdf.exe ""C:\测试中文文件夹\Cliente_11_AUR8903.xlsx""");
             Console.ReadLine();
         }
 

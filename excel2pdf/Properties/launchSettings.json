@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "excel2pdf": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\测试中文文件夹\\Cliente_11_AUR8903.xlsx"
+    }
+  }
+}

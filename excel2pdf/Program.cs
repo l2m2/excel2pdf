@@ -89,26 +89,39 @@ namespace excel2pdf
 
         static int Main(string[] args)
         {
-            Environment.SetEnvironmentVariable("COMPlus_legacyCorruptedStateExceptionsPolicy", "1");
-            var ap = new ArgumentParser();
-            ap.Add('i', "input", OptionType.RequiredArgument, "input excel file path.");
-            ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path.");
-            ap.AddHelp();
-            ap.Parse(args);
-            var input = ap.Get("input") ?? args[0] ?? $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
-            if (!System.IO.File.Exists(input))
+            try
             {
-                Console.Write("xlsx 文件不存在或无法访问");
+                //System.IO.File.AppendAllText("excel2pdf_.log",   "start \r\n");
+                Environment.SetEnvironmentVariable("COMPlus_legacyCorruptedStateExceptionsPolicy", "1");
+                var ap = new ArgumentParser();
+                ap.Add('i', "input", OptionType.RequiredArgument, "input excel file path.");
+                ap.Add('o', "output", OptionType.RequiredArgument, "output pdf file path.");
+                ap.AddHelp();
+                ap.Parse(args);
+                //System.IO.File.AppendAllText("excel2pdf_.log", args.Length.ToString ()+ "\r\n");
+                if (args.Length > 0) System.IO.File.AppendAllText("excel2pdf_.log", args[0]+ "\r\n");
+                var input = args.Length > 0 ? (ap.Get("input") ?? args[0]) : $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
+                if (!System.IO.File.Exists(input))
+                {
+                    Console.Write("xlsx 文件不存在或无法访问");
+                    return 0;
+                }
+                var output = ap.Get("output") ?? System.IO.Path.GetFullPath(input).Replace(".xlsx", ".pdf");
+                if (System.IO.File.Exists(output))
+                {
+                    System.IO.File.Delete(output);
+                }
+                var res = ExportWorkbookToPdf(input, output);
+                Console.Write(res == "OK" ? output : res);
+                return res == "OK" ? 1 : 0;
+
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.WriteAllText("excel2pdf_.log", ex.Message);
+                Console.Write(ex.Message);
                 return 0;
             }
-            var output = ap.Get("output") ?? System.IO.Path.GetFullPath(input).Replace(".xlsx",".pdf");
-            if (System.IO.File.Exists(output))
-            {
-                System.IO.File.Delete(output);
-            }
-            var res=ExportWorkbookToPdf(input, output);
-            Console.Write(res == "OK"? output:res);
-            return res == "OK"?1:0;
         }
     }
 }
