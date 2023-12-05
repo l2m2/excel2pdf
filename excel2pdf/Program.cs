@@ -9,12 +9,12 @@ namespace excel2pdf
     class Program
     {
         [SecurityCritical]
-        public static bool ExportWorkbookToPdf(string workbookPath, string outputPath)
+        public static string ExportWorkbookToPdf(string workbookPath, string outputPath)
         {
             // 如果所需字符串为 null 或为空，则停止并退出
             if (string.IsNullOrEmpty(workbookPath) || string.IsNullOrEmpty(outputPath))
             {
-                return false;
+                return "字符串为空";
             }
 
             // Create COM Objects
@@ -41,10 +41,10 @@ namespace excel2pdf
                 excelApplication = null;
                 excelWorkbook = null;
 
-                return false;
+                return "工作簿无法打开、停止、清理和退出";
             }
 
-            var exportSuccessful = true;
+            var exportSuccessful = "OK";
             try
             {
                 //excelApplication.PrintCommunication = false;
@@ -62,7 +62,7 @@ namespace excel2pdf
             catch (System.Exception ex)
             {
                 // Mark the export as failed for the return value...
-                exportSuccessful = false;
+                exportSuccessful = ex.Message;
 
                 // Do something with any exceptions here, if you wish...
                 // MessageBox.Show(ex.Message);
@@ -97,13 +97,18 @@ namespace excel2pdf
             ap.Parse(args);
             var input = ap.Get("input") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}Cliente_11_9页长单据.xlsx";
             var output = ap.Get("output") ?? $@"{AppDomain.CurrentDomain.BaseDirectory}test.pdf";
+            if (!System.IO.File.Exists(input))
+            {
+                Console.WriteLine("xlsx 文件不存在或无法访问");
+                return 0;
+            }
             if (System.IO.File.Exists(output))
             {
                 System.IO.File.Delete(output);
             }
-
-            bool ok = ExportWorkbookToPdf(input, output);
-            return ok ? 0 : 1;
+            var res=ExportWorkbookToPdf(input, output);
+            Console.WriteLine(res);
+            return res == "OK"?1:0;
         }
     }
 }
